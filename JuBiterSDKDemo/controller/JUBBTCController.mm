@@ -55,7 +55,7 @@
         BUTTON_TITLE_QTUM,
         BUTTON_TITLE_QTUM_QRC20,
         BUTTON_TITLE_USDT,
-//        BUTTON_TITLE_HCASH
+        BUTTON_TITLE_HCASH
     ];
 }
 
@@ -1123,154 +1123,190 @@
 - (void) get_address_pubkey_HC:(NSUInteger)contextID {
     
     JUB_RV rv = JUBR_ERROR;
-    
+    CommonProtosResultString * rvStr = [[CommonProtosResultString alloc]init];
     JUBSharedData *sharedData = [JUBSharedData sharedInstance];
     if (nil == sharedData) {
         return;
     }
     
     JUB_CHAR_PTR mainXpub;
-    rv = JUB_GetMainHDNodeHC(contextID, &mainXpub);
+//    rv = JUB_GetMainHDNodeHC(contextID, &mainXpub);
+    rvStr = [g_sdk getMainHDNodeHC:contextID];
+    rv = rvStr.stateCode;
     if (JUBR_OK != rv) {
         [self addMsgData:[NSString stringWithFormat:@"[JUB_GetMainHDNodeHC() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
+    mainXpub = (JUB_CHAR_PTR)rvStr.value.UTF8String;
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetMainHDNodeHC() OK.]"]];
     
     [self addMsgData:[NSString stringWithFormat:@"Main xpub(%@): %s.", [sharedData currMainPath], mainXpub]];
-    rv = JUB_FreeMemory(mainXpub);
-    if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_FreeMemory() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
-        return;
-    }
-    [self addMsgData:[NSString stringWithFormat:@"[JUB_FreeMemory() OK.]"]];
+//    rv = JUB_FreeMemory(mainXpub);
+//    if (JUBR_OK != rv) {
+//        [self addMsgData:[NSString stringWithFormat:@"[JUB_FreeMemory() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
+//        return;
+//    }
+//    [self addMsgData:[NSString stringWithFormat:@"[JUB_FreeMemory() OK.]"]];
     
-    BIP44_Path path;
-    path.change       = [sharedData currPath].change;
+//    BIP44_Path path;
+//    path.change       = [sharedData currPath].change;
+//    path.addressIndex = [sharedData currPath].addressIndex;
+    CommonProtosBip44Path * path = [[CommonProtosBip44Path alloc]init];
+    path.change = [sharedData currPath].change;
     path.addressIndex = [sharedData currPath].addressIndex;
     
-    JUB_CHAR_PTR xpub;
-    rv = JUB_GetHDNodeHC(contextID, path, &xpub);
+//    JUB_CHAR_PTR xpub;
+//    rv = JUB_GetHDNodeHC(contextID, path, &xpub);
+    rvStr = [g_sdk getHDNodeHC:contextID pbPath:path];
+    rv = rvStr.stateCode;
     if (JUBR_OK != rv) {
         [self addMsgData:[NSString stringWithFormat:@"[JUB_GetHDNodeHC() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
+    JUB_CHAR_PTR xpub = (JUB_CHAR_PTR)rvStr.value.UTF8String;
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetHDNodeHC() OK.]"]];
     [self addMsgData:[NSString stringWithFormat:@"input xpub(%@/%u/%llu): %s.", [sharedData currMainPath], path.change, path.addressIndex, xpub]];
-    rv = JUB_FreeMemory(xpub);
-    if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_FreeMemory() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
-        return;
-    }
-    [self addMsgData:[NSString stringWithFormat:@"[JUB_FreeMemory() OK.]"] ];
+//    rv = JUB_FreeMemory(xpub);
+//    if (JUBR_OK != rv) {
+//        [self addMsgData:[NSString stringWithFormat:@"[JUB_FreeMemory() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
+//        return;
+//    }
+//    [self addMsgData:[NSString stringWithFormat:@"[JUB_FreeMemory() OK.]"] ];
     
-    JUB_CHAR_PTR address;
-    rv = JUB_GetAddressHC(contextID, path, BOOL_FALSE, &address);
+//    JUB_CHAR_PTR address;
+//    rv = JUB_GetAddressHC(contextID, path, BOOL_FALSE, &address);
+    rvStr = [g_sdk getAddressHC:contextID pbPath:path bShow:NO];
     if (JUBR_OK != rv) {
         [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressHC() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
+    JUB_CHAR_PTR address = (JUB_CHAR_PTR)rvStr.value.UTF8String;
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressHC() OK.]"]];
     [self addMsgData:[NSString stringWithFormat:@"input address(%@/%d/%llu): %s.", [sharedData currMainPath], path.change, path.addressIndex, address]];
-    rv = JUB_FreeMemory(address);
-    if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_FreeMemory() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
-        return;
-    }
-    [self addMsgData:[NSString stringWithFormat:@"[JUB_FreeMemory() OK.]"]];
+//    rv = JUB_FreeMemory(address);
+//    if (JUBR_OK != rv) {
+//        [self addMsgData:[NSString stringWithFormat:@"[JUB_FreeMemory() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
+//        return;
+//    }
+//    [self addMsgData:[NSString stringWithFormat:@"[JUB_FreeMemory() OK.]"]];
 }
 
 
 - (void) show_address_test_HC:(NSUInteger)contextID {
     
     JUB_RV rv = JUBR_ERROR;
-    
+    CommonProtosResultString * rvStr = [[CommonProtosResultString alloc]init];
     JUBSharedData *sharedData = [JUBSharedData sharedInstance];
     if (nil == sharedData) {
         return;
     }
     
-    BIP44_Path path;
-    path.change       = [sharedData currPath].change;
+//    BIP44_Path path;
+//    path.change       = [sharedData currPath].change;
+//    path.addressIndex = [sharedData currPath].addressIndex;
+    
+    CommonProtosBip44Path * path = [[CommonProtosBip44Path alloc]init];
+    path.change = [sharedData currPath].change;
     path.addressIndex = [sharedData currPath].addressIndex;
     
-    JUB_CHAR_PTR address;
-    rv = JUB_GetAddressHC(contextID, path, BOOL_TRUE, &address);
+//    JUB_CHAR_PTR address;
+//    rv = JUB_GetAddressHC(contextID, path, BOOL_TRUE, &address);
+    rvStr = [g_sdk getAddressHC:contextID pbPath:path bShow:YES];
     if (JUBR_OK != rv) {
         [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressHC() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
+    JUB_CHAR_PTR address = (JUB_CHAR_PTR)rvStr.value.UTF8String;
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressHC() OK.]"]];
     [self addMsgData:[NSString stringWithFormat:@"Show address(%@/%d/%llu): %s.", [sharedData currMainPath], path.change, path.addressIndex, address]];
     
-    rv = JUB_FreeMemory(address);
-    if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_FreeMemory() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
-        return;
-    }
-    [self addMsgData:[NSString stringWithFormat:@"[JUB_FreeMemory() OK.]"]];
+//    rv = JUB_FreeMemory(address);
+//    if (JUBR_OK != rv) {
+//        [self addMsgData:[NSString stringWithFormat:@"[JUB_FreeMemory() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
+//        return;
+//    }
+//    [self addMsgData:[NSString stringWithFormat:@"[JUB_FreeMemory() OK.]"]];
 }
 
 
 - (NSUInteger) transactionHC_proc:(NSUInteger)contextID
                            amount:(NSString*)amount
                              root:(Json::Value)root {
-    
+    HcashProtosTransactionHC * pbTransaction = [[HcashProtosTransactionHC alloc]init];
     JUB_RV rv = JUBR_ERROR;
     
     JUB_UINT32 version = root["ver"].asInt();
     
-    std::vector< INPUT_HC>  inputs;
-    std::vector<OUTPUT_HC> outputs;
+    //    std::vector< INPUT_HC>  inputs;
+    //    std::vector<OUTPUT_HC> outputs;
+    pbTransaction.inputsArray = [NSMutableArray array];
+    pbTransaction.outputsArray = [NSMutableArray array];
+    pbTransaction.version = version;
+    pbTransaction.locktime = 0;
     int inputNumber = root["inputs"].size();
     
     for (int i = 0; i < inputNumber; i++) {
-        INPUT_HC input;
-        input.path.change = (JUB_ENUM_BOOL)root["inputs"][i]["bip32_path"]["change"].asBool();
+//        INPUT_HC input;
+//        input.path.change = (JUB_ENUM_BOOL)root["inputs"][i]["bip32_path"]["change"].asBool();
+//        input.path.addressIndex = root["inputs"][i]["bip32_path"]["addressIndex"].asInt();
+//        input.amount = root["inputs"][i]["amount"].asUInt64();
+//        inputs.push_back(input);
+        HcashProtosInputHC * input = [[HcashProtosInputHC alloc]init];
+        input.path.change = root["inputs"][i]["bip32_path"]["change"].asBool();
         input.path.addressIndex = root["inputs"][i]["bip32_path"]["addressIndex"].asInt();
         input.amount = root["inputs"][i]["amount"].asUInt64();
-        inputs.push_back(input);
+        [pbTransaction.inputsArray addObject:input];
     }
     
     int outputNumber = root["outputs"].size();
     
     for (int i = 0; i < outputNumber; i++) {
-        OUTPUT_HC output;
-        output.changeAddress = (JUB_ENUM_BOOL)root["outputs"][i]["change_address"].asBool();
+//        OUTPUT_HC output;
+//        output.changeAddress = (JUB_ENUM_BOOL)root["outputs"][i]["change_address"].asBool();
+//        if (output.changeAddress) {
+//            output.path.change = (JUB_ENUM_BOOL)root["outputs"][i]["bip32_path"]["change"].asBool();
+//            output.path.addressIndex = root["outputs"][i]["bip32_path"]["addressIndex"].asInt();
+//        }
+//        outputs.push_back(output);
+        HcashProtosOutputHC * output = [[HcashProtosOutputHC alloc]init];
+        output.changeAddress = root["outputs"][i]["change_address"].asBool();
         if (output.changeAddress) {
-            output.path.change = (JUB_ENUM_BOOL)root["outputs"][i]["bip32_path"]["change"].asBool();
+            output.path.change = root["outputs"][i]["bip32_path"]["change"].asBool();
             output.path.addressIndex = root["outputs"][i]["bip32_path"]["addressIndex"].asInt();
         }
-        outputs.push_back(output);
+        [pbTransaction.outputsArray addObject:output];
     }
     
     char* unsignedRaw = (char*)root["unsigned_tx"].asCString();
     
     char* raw = nullptr;
-    rv = JUB_SignTransactionHC(contextID,
-                               version,
-                               &inputs[0], (JUB_UINT16)inputs.size(),
-                               &outputs[0], (JUB_UINT16)outputs.size(),
-                               unsignedRaw,
-                               &raw);
+//    rv = JUB_SignTransactionHC(contextID,
+//                               version,
+//                               &inputs[0], (JUB_UINT16)inputs.size(),
+//                               &outputs[0], (JUB_UINT16)outputs.size(),
+//                               unsignedRaw,
+//                               &raw);
+    CommonProtosResultString * rvStr = [[CommonProtosResultString alloc]init];
+    rvStr = [g_sdk signTransactionHC:contextID unsignedTrans:[NSString stringWithCString:unsignedRaw encoding:NSUTF8StringEncoding] pbTx:pbTransaction];
+    rv = rvStr.stateCode;
     if (   JUBR_OK != rv
-        || nullptr == raw
+        || /*nullptr == raw*/rvStr.value.length
         ) {
         [self addMsgData:[NSString stringWithFormat:@"[JUB_SignTransactionHC() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_SignTransactionHC() OK.]"]];
-    
+    raw = (JUB_CHAR_PTR)rvStr.value.UTF8String;
     if (raw) {
         size_t txLen = strlen(raw)/2;
         [self addMsgData:[NSString stringWithFormat:@"tx raw[%lu]: %s.", txLen, raw]];
         
-        rv = JUB_FreeMemory(raw);
-        if (JUBR_OK != rv) {
-            [self addMsgData:[NSString stringWithFormat:@"[JUB_FreeMemory() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
-            return rv;
-        }
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_FreeMemory() OK.]"]];
+//        rv = JUB_FreeMemory(raw);
+//        if (JUBR_OK != rv) {
+//            [self addMsgData:[NSString stringWithFormat:@"[JUB_FreeMemory() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
+//            return rv;
+//        }
+//        [self addMsgData:[NSString stringWithFormat:@"[JUB_FreeMemory() OK.]"]];
     }
     
     return rv;

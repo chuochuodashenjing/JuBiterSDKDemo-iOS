@@ -19,7 +19,9 @@
 #import <JubSDKProtobuf/JubSDK+DEV.h>
 #import <JubSDKProtobuf/JubSDK+DEV_BLE.h>
 #import <JubSDKProtobuf/JubSDK+COIN_BTC.h>
-
+#import <JubSDKProtobuf/JubSDK+COIN_Hcash.h>
+#import <JubSDKProtobuf/JubSDK+COIN_ETH.h>
+#import <JubSDKProtobuf/JubSDK+COIN_EOS.h>
 extern JubSDK* g_sdk;
 
 
